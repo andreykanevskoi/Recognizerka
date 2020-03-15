@@ -1,12 +1,21 @@
 from PIL import Image
+import csv
 
-fonts = ['18847', '18872', '19046', '19051', '19081']
+fonts = []
 modes = ['u', 'l']
+
+with open('/home/andrew/Recognizerka/fonts/fonts/fonts.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    i = 0
+    for row in csv_reader:
+        if i>0 :
+            fonts.append(row[0])
+        i+=1
 
 for font in fonts:
   for mode in modes:
     for i in range(33):
-      name = "/home/andrew/Recognizerka/fonts/png_32_32/{0}_{1}_{2}.png".format(font, mode, str(i))
+      name = "/home/andrew/Recognizerka/fonts/fonts/pngs/{0}_{1}_{2}.png".format(font, mode, str(i))
       im = Image.open(name)
       im = im.resize((32,32))
       im.save(name)
