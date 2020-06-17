@@ -1,0 +1,125 @@
+<html>
+<script type="text/javascript">
+  var canvas, ctx, flag = false,
+    prevX = 0,
+    currX = 0,
+    prevY = 0,
+    currY = 0,
+    dot_flag = false;
+
+  var x = "black",
+    y = 10;
+
+  function init() {
+    canvas = document.getElementById('can');
+    ctx = canvas.getContext("2d");
+    w = canvas.width;
+    h = canvas.height;
+
+    canvas.addEventListener("mousemove", function (e) {
+      findxy('move', e)
+    }, false);
+    canvas.addEventListener("mousedown", function (e) {
+      findxy('down', e)
+    }, false);
+    canvas.addEventListener("mouseup", function (e) {
+      findxy('up', e)
+    }, false);
+    canvas.addEventListener("mouseout", function (e) {
+      findxy('out', e)
+    }, false);
+
+    ctx.fillStyle = '#FFFFF1';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = x;
+  }
+
+  function draw() {
+    ctx.beginPath();
+    ctx.moveTo(prevX, prevY);
+    ctx.arc(currX, currY, y, 0, 2*Math.PI, true);
+    //ctx.lineTo(currX, currY);
+    ctx.strokeStyle = x;
+    ctx.lineWidth = y;
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function erase() {
+    var m = confirm("Want to clear");
+    if (m) {
+      ctx.fillStyle = '#FFFFF1';
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = x;
+      document.getElementById("canvasimg").style.display = "none";
+    }
+  }
+
+  function decode_utf8( s )
+  {
+    return decodeURIComponent( escape( s ) );
+  }
+
+  function save() {
+    document.getElementById("canvasimg").style.border = "2px solid";
+    var dataURL = canvas.toDataURL();
+    document.getElementById("canvasimg").src = dataURL;
+    document.getElementById("canvasimg").style.display = "inline";
+
+    var xmlHttp = new XMLHttpRequest();
+    var servUrl = new URL('http://127.0.0.1:5000/');
+    xmlHttp.open( "POST", servUrl, false ); // false for synchronous request
+    var body = 'img=' + encodeURIComponent(dataURL);
+    xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');    
+    xmlHttp.send( body );
+    var rp = xmlHttp.responseText;
+    rp = JSON.parse(rp);
+    alert(rp.responseText);
+  }
+
+  function findxy(res, e) {
+    if (res == 'down') {
+      prevX = currX;
+      prevY = currY;
+      currX = e.clientX - canvas.offsetLeft;
+      currY = e.clientY - canvas.offsetTop;
+
+      flag = true;
+      dot_flag = true;
+      if (dot_flag) {
+        ctx.beginPath();
+        ctx.fillStyle = x;
+        ctx.fillRect(currX, currY, 2, 2);
+        ctx.closePath();
+        dot_flag = false;
+      }
+    }
+    if (res == 'up' || res == "out") {
+      flag = false;
+    }
+    if (res == 'move') {
+      if (flag) {
+        prevX = currX;
+        prevY = currY;
+        currX = e.clientX - canvas.offsetLeft;
+        currY = e.clientY - canvas.offsetTop;
+        draw();
+      }
+    }
+  }
+</script>
+
+<body onload="init()">
+  <canvas id="can" width="400" height="400" style="position:absolute;top:10%;left:1%;border:2px solid;"></canvas>
+  <img id="canvasimg" style="position:absolute;top:10%;left:52%;" style="display:none;">
+  <input type="button" value="check" id="btn" size="30" onclick="save()" style="position:absolute;top:80%;left:10%;">
+  <input type="button" value="clear" id="clr" size="30" onclick="erase()" style="position:absolute;top:80%;left:15%;">
+  {% if name %}
+    <h1>Hello {{ name }}!</h1>
+  {% else %}
+    <h1>Hello World!</h1>
+  {% endif %}
+
+</body>
+
+</html>
