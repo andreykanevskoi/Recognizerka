@@ -66,3 +66,9 @@ RUS_CHARS = [
     'я'.encode('utf-8'),
     'ё'.encode('utf-8'),
 ]
+
+# путь к рабочей директории
+P_DIR_PATH = '/home/andrew/Recognizerka/'
+
+# размер русского алфавита
+ALPHABET_SIZE = 33
