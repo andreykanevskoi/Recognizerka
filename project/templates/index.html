@@ -1,3 +1,16 @@
+<!--
+  HTML - страница index.html
+
+  Данный файл содержит макет html страницы.
+  Здесь представлен прототип взаимодействия пользователя и сервера.
+  Полотно canvas данной страницы позволяет писать буквы и работать с их png отображением.
+  Полученные на данном canvas изображения отправляются для обработки на сервер.
+
+  Так как сервер работает под управлением Flask, здесь поддерживаются html-шаблоны.
+
+  Разработчик: Каневской Андрей
+  Таганрог 2020г.
+-->
 <html>
 <script type="text/javascript">
   var canvas, ctx, flag = false,
@@ -38,7 +51,6 @@
     ctx.beginPath();
     ctx.moveTo(prevX, prevY);
     ctx.arc(currX, currY, y, 0, 2*Math.PI, true);
-    //ctx.lineTo(currX, currY);
     ctx.strokeStyle = x;
     ctx.lineWidth = y;
     ctx.stroke();
@@ -68,7 +80,7 @@
 
     var xmlHttp = new XMLHttpRequest();
     var servUrl = new URL('http://127.0.0.1:5000/');
-    xmlHttp.open( "POST", servUrl, false ); // false for synchronous request
+    xmlHttp.open( "POST", servUrl, false ); 
     var body = 'img=' + encodeURIComponent(dataURL);
     xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');    
     xmlHttp.send( body );
