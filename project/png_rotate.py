@@ -1,9 +1,28 @@
+#
+#  Скрипт png_rotate.py
+#  Предназначен для обработки png-представлений символов шрифтов
+#  Вращает изображение и сохраняет каждый поворот
+#
+#  Разработчик: Каневской Андрей
+#  Таганрог 2020г
+#
+
 from PIL import Image
 import csv
 
+ROTATE_FROM = -17
+ROTATE_TO = 18
+DIR_PATH = '/home/andrew/Recognizerka/fonts'
+
+# список кодов шрифтов
 fonts = []
+
+# список режимов
+# * u - upper - заглавные буквы
+# * l - lower - прописные буквы
 modes = ['u', 'l']
 
+# из csv файла загружается список шрифтов
 with open('/home/andrew/Recognizerka/fonts/fonts/fonts.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     i = 0
@@ -12,14 +31,17 @@ with open('/home/andrew/Recognizerka/fonts/fonts/fonts.csv') as csv_file:
             fonts.append(row[0])
         i+=1
 
-
+# 1. из каждого шрифта выбирается буква
+# 2. загружается png-изображение буквы
+# 3. добавляется вращение от -17 до 17 градусов включительно
+# 4. каждая версия поворота сохраняется в папку
 for font in fonts:
   for mode in modes:
     for i in range(33):
-      name = "/home/andrew/Recognizerka/fonts/fonts/pngs/{0}_{1}_{2}.png".format(font, mode, str(i))
-      im = Image.open(name)
-      for angle in range(-17, 18):
-        im1 = im.rotate(angle)
-        new_name = "/home/andrew/Recognizerka/fonts/png_32_32_rotate/{0}_{1}_{2}_{3}.png".format(font, mode, str(i), str(angle))
-        im1.save(new_name)
+      name = "{3}/fonts/pngs/{0}_{1}_{2}.png".format(font, mode, str(i), DIR_PATH)
+      im = Image.open(name) # открывается изображение
+      for angle in range(ROTATE_FROM, ROTATE_TO):
+        im1 = im.rotate(angle) # поворот на angle градусов
+        new_name = "{4}/png_32_32_rotate/{0}_{1}_{2}_{3}.png".format(font, mode, str(i), str(angle), DIR_PATH)
+        im1.save(new_name) # сохранение изображения
   
