@@ -9,7 +9,7 @@
 
 from PIL import Image
 import csv
-import project_const as P
+import project.project_const as P
 
 # список кодов шрифтов
 fonts = []
@@ -34,7 +34,7 @@ with open('{}/fonts/fonts/fonts.csv'.format(P.P_DIR_PATH)) as csv_file:
 # 4. каждая версия сохраняется в папку
 for font in fonts:
   for mode in modes:
-    for i in range(33):
+    for i in range(P.ALPHABET_SIZE):
       name = "{3}/fonts/fonts/pngs/{0}_{1}_{2}.png".format(font, mode, str(i), P.P_DIR_PATH)
       im = Image.open(name)
       im = im.resize((32,32))

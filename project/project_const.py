@@ -72,3 +72,7 @@ P_DIR_PATH = '/home/andrew/Recognizerka/'
 
 # размер русского алфавита
 ALPHABET_SIZE = 33
+
+# углы поворота изображения
+ROTATE_FROM = -17
+ROTATE_TO = 18

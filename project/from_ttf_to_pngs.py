@@ -1,27 +1,34 @@
+#
+#  Скрипт from_ttf_to_pngs.py
+#  Предназначен для получения png-представлений кириллицы
+#  Данные о конфигурации каждого шрифта берутся из csv файла
+#
+#  Разработчик: Каневской Андрей
+#  Таганрог 2020г
+#
+
 import fontforge
+import project.project_const as P
 import os
 
-# path - path to foldet with ttf
-# fontCode - name of ttf file
-# lBegin - name of first russian lowercase character in ttf
-# lEnd - name of last russian lowercase character in ttf
-# uBegin - name of first russian uppercase character in ttf
-# uEnd - name of last russian uppercase character in ttf
-# lE - name of lower Er
-# uE - name of upper Er
+# path - путь к папке с ttf
+# fontCode - имя файла ttf
+# lBegin - код первой русской прописной буквы в ttf
+# lEnd - код последней русской прописной буквы в ttf
+# uBegin - код первой русской заглавной буквы в ttf
+# uEnd - код последней русской заглавной буквы в ttf
+# lE - код прописной ё
+# uE - код заглавной Ё
 
 
 def unpackRussianPNGfromTTF(path, fontCode, fontType, lBegin, lEnd, uBegin, uEnd, lE, uE, size=32):
     newPath = path+"/pngs/"
-    
-    # make new directory
-    # os.mkdir(newPath)
 
-    # open font
+    # открываем шрифт
     F = fontforge.open(path+"/"+fontCode+"."+fontType)
 
 
-    # select uppercase chars
+    # выбираем и сохраняем заглавные буквы
     temp = fontforge.font()
     F.selection.select(("ranges", None), uBegin, uEnd)
     F.copy()
@@ -29,7 +36,6 @@ def unpackRussianPNGfromTTF(path, fontCode, fontType, lBegin, lEnd, uBegin, uEnd
     temp.selection.select(("ranges", None), "?", "^")
     temp.paste()
 
-    # save uppercase chars
     i = 0
     for name in temp:
         PNGname = newPath+"{0}_u_{1}.png".format(fontCode, str(i))
@@ -37,7 +43,7 @@ def unpackRussianPNGfromTTF(path, fontCode, fontType, lBegin, lEnd, uBegin, uEnd
         i += 1
 
 
-    # select lowercase chars
+    # выбираем и сохраняем прописные буквы
     temp = fontforge.font()
     F.selection.select(("ranges", None), lBegin, lEnd)
     F.copy()
@@ -45,14 +51,13 @@ def unpackRussianPNGfromTTF(path, fontCode, fontType, lBegin, lEnd, uBegin, uEnd
     temp.selection.select(("ranges", None), "?", "^")
     temp.paste()
 
-    # save lowercase chars
     i = 0
     for name in temp:
         PNGname = newPath+"{0}_l_{1}.png".format(fontCode, str(i))
         temp[name].export(PNGname, size-1)
         i += 1
 
-    # save Er
+    # сохраняем Ё
     i = 32
     
     temp = fontforge.font()
@@ -77,7 +82,7 @@ def unpackRussianPNGfromTTF(path, fontCode, fontType, lBegin, lEnd, uBegin, uEnd
         PNGname = newPath+"{0}_u_{1}.png".format(fontCode, str(i))
         temp[name].export(PNGname, size-1)
 
-path = '/home/andrew/Recognizerka/fonts/fonts'
+path = '{}/fonts/fonts'.format(P.P_DIR_PATH)
 
 import csv
 
@@ -90,7 +95,7 @@ upperEnds = []
 lEs = []
 uEs = []
 
-with open('/home/andrew/Recognizerka/fonts/fonts/fonts.csv') as csv_file:
+with open('{}/fonts/fonts/fonts.csv'.format(P.P_DIR_PATH)) as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     i = 0
     for row in csv_reader:

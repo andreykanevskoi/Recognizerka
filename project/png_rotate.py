@@ -9,10 +9,7 @@
 
 from PIL import Image
 import csv
-import project_const as P
-
-ROTATE_FROM = -17
-ROTATE_TO = 18
+import project.project_const as P
 
 # список кодов шрифтов
 fonts = []
@@ -40,7 +37,7 @@ for font in fonts:
     for i in range(P.ALPHABET_SIZE):
       name = "{3}/fonts/fonts/pngs/{0}_{1}_{2}.png".format(font, mode, str(i), P.P_DIR_PATH)
       im = Image.open(name) # открывается изображение
-      for angle in range(ROTATE_FROM, ROTATE_TO):
+      for angle in range(P.ROTATE_FROM, P.ROTATE_TO):
         im1 = im.rotate(angle) # поворот на angle градусов
         new_name = "{4}/fonts/png_32_32_rotate/{0}_{1}_{2}_{3}.png".format(font, mode, str(i), str(angle), P.P_DIR_PATH)
         im1.save(new_name) # сохранение изображения
