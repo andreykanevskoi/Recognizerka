@@ -4,7 +4,7 @@ from PIL import Image
 
 def getArrayFromImage(path):
   img = Image.open(path).convert('L')
-  arr = np.array(img).reshape(32,32,1)
+  arr = np.array(img)[:, :, np.newaxis]
   return arr
 
 def getNullArrayExcept(number):
@@ -13,6 +13,7 @@ def getNullArrayExcept(number):
   return arr
 
 def getFinalCharacterNumber(number, mode):
+  
   res = number
   if mode == 'l':
     res+=33
@@ -34,15 +35,21 @@ with open('/home/andrew/Recognizerka/fonts/fonts/fonts.csv') as csv_file:
 rotate_start = -17
 rotate_finish = 17
 chars = 66
+
+#fonts = ['18847'] # DEBUG
+
 fontsLen = len(fonts)
 train_size = fontsLen*(rotate_finish-rotate_start+1)*chars
+#train_size = 2310
 
 # create train-set
 x_train = np.zeros((train_size, 32, 32, 1))
 y_train = np.zeros((train_size, ))
 
 n = 0
+
 for font in fonts:
+  # font = fonts[font]
   print('** {0} **'.format(font))
   for mode in modes:
     for i in range(chars//2):
@@ -58,8 +65,12 @@ print('Summary train added: {0}'.format(n))
 x_test = np.zeros((train_size//fontsLen, 32, 32, 1))
 y_test = np.zeros((train_size//fontsLen, ))
 
+# x_test = np.zeros((train_size, 32, 32, 1))
+# y_test = np.zeros((train_size, ))
+
 n = 0
 FONT=random.choice(fonts)
+# FONT=fonts[test_font]
 for mode in modes:
     for i in range(chars//2):
       for angle in range(rotate_start, rotate_finish+1):
@@ -69,5 +80,8 @@ for mode in modes:
         n+=1
 
 print('Summary test added: {0}'.format(n))
+
+print(x_train.shape)
+print(y_train.shape)
 
 np.savez_compressed('/home/andrew/Recognizerka/fonts/png32_rotated', x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test)
